@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>simon m</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, orbitron;
+            background: #0a0a0a;
+            color: #fff;
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        canvas { position: fixed; top: 0; left: 0; pointer-events: none; }
+        .nav { position: fixed; top: 40px; right: 40px; display: flex; gap: 20px; }
+        .nav a { color: #ccc; text-decoration: none; font-size: 14px; position: relative; transition: color 0.2s; }
+        .nav a:hover { color: #fff; }
+        .nav a::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 1px; background: #fff; transition: width 0.2s; }
+        .nav a:hover::after { width: 100%; }
+        .main { display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .name { font-size: 5rem; font-weight: 300; margin: 0; }
+        @media (max-width: 768px) { .name { font-size: 3rem; } .nav { top: 20px; right: 20px; gap: 15px; } }
+    </style>
+</head>
+<body>
+    <canvas id="c"></canvas>
+    <nav class="nav">
+        <a href="https://linkedin.com/in/simoncmarcotte">LinkedIn</a>
+        <a href="https://github.com/simonMarcotte">GitHub</a>
+        <a href="mailto:simonmrctt@example.com">Email</a>
+    </nav>
+    <div class="main">
+        <h1 class="name">simon marcotte</h1>
+    </div>
+
+    <script>
+    const c = document.getElementById('c'), ctx = c.getContext('2d');
+    let w, h, stars = [], mouse = { x: 0, y: 0 };
+    
+    function resize() { 
+        c.width = w = innerWidth; 
+        c.height = h = innerHeight;
+        stars = [];
+        for (let i = 0; i < 80; i++) {
+            stars.push({
+                x: Math.random() * w,
+                y: Math.random() * h,
+                brightness: Math.random() * 0.5 + 0.2,
+                twinkle: Math.random() * 0.02 + 0.01
+            });
+        }
+    }
+    resize();
+    addEventListener('resize', resize);
+    
+    addEventListener('mousemove', e => { mouse.x = e.x; mouse.y = e.y; });
+    
+    addEventListener('click', e => {
+        stars.push({
+            x: e.x,
+            y: e.y,
+            brightness: 0.8,
+            twinkle: Math.random() * 0.02 + 0.01
+        });
+    });
+    
+    function animate() {
+        ctx.clearRect(0, 0, w, h);
+        
+        stars.forEach((star, i) => {
+            // Twinkle effect
+            star.brightness += star.twinkle;
+            if (star.brightness > 0.8 || star.brightness < 0.2) star.twinkle *= -1;
+            
+            // Draw star
+            ctx.beginPath();
+            ctx.arc(star.x, star.y, 1.5, 0, 6.28);
+            ctx.fillStyle = `rgba(255,255,255,${star.brightness})`;
+            ctx.fill();
+            
+            // Connect to nearby stars
+            for (let j = i + 1; j < stars.length; j++) {
+                const other = stars[j];
+                const dx = star.x - other.x;
+                const dy = star.y - other.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                
+                if (dist < 120) {
+                    const opacity = (120 - dist) / 120 * 0.3;
+                    ctx.strokeStyle = `rgba(255,255,255,${opacity})`;
+                    ctx.lineWidth = 0.5;
+                    ctx.beginPath();
+                    ctx.moveTo(star.x, star.y);
+                    ctx.lineTo(other.x, other.y);
+                    ctx.stroke();
+                }
+            }
+            
+            const dx = mouse.x - star.x;
+            const dy = mouse.y - star.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            
+            if (dist < 150) {
+                const opacity = (150 - dist) / 150 * 0.6;
+                ctx.strokeStyle = `rgba(255,255,255,${opacity})`;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(star.x, star.y);
+                ctx.lineTo(mouse.x, mouse.y);
+                ctx.stroke();
+                
+                // Brighten connected star
+                star.brightness = Math.min(0.9, star.brightness + 0.1);
+            }
+        });
+        
+        requestAnimationFrame(animate);
+    }
+    animate();
+    </script>
+</body>
+</html>
