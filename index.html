@@ -31,7 +31,7 @@
             overscroll-behavior: none;
         }
 
-        canvas { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 1; }
+        canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 1; }
         
         .content { position: relative; z-index: 10; }
         
@@ -42,6 +42,7 @@
         .nav a:hover::after { width: 100%; }
         
         .header {
+            height: 100vh;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -438,12 +439,16 @@
     }
     
     function resize() { 
-        c.width = w = innerWidth; 
-        c.height = h = innerHeight;
+        w = innerWidth;
+        // Use full document height for canvas
+        h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight, innerHeight);
+        c.width = w; 
+        c.height = h;
         
         // Only regenerate stars if we don't have any
         if (stars.length === 0) {
-            for (let i = 0; i < 80; i++) {
+            const numStars = Math.ceil(80 * (h / innerHeight));
+            for (let i = 0; i < numStars; i++) {
                 stars.push({
                     x: Math.random() * w,
                     y: Math.random() * h,
@@ -455,14 +460,17 @@
         
         getTimelineNodes();
     }
-    resize();
+    // Delay initial resize to let page layout settle
+    setTimeout(resize, 100);
     
     let resizeTimeout;
     addEventListener('resize', () => {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(() => {
-            c.width = w = innerWidth;
-            c.height = h = innerHeight;
+            w = innerWidth;
+            h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight, innerHeight);
+            c.width = w;
+            c.height = h;
             // Clamp existing stars to new dimensions
             stars.forEach(star => {
                 if (star.x > w) star.x = Math.random() * w;
@@ -476,10 +484,10 @@
     let isDragging = false;
     let touchStartTime = 0;
     
-    // Mouse events for desktop - use viewport coordinates
+    // Mouse events for desktop - use absolute page coordinates
     addEventListener('mousemove', e => { 
         mouse.x = e.clientX; 
-        mouse.y = e.clientY;
+        mouse.y = e.clientY + window.scrollY;
     });
     
     // Touch events for mobile
@@ -489,14 +497,14 @@
         isDragging = false;
         const touch = e.touches[0];
         mouse.x = touch.clientX;
-        mouse.y = touch.clientY;
+        mouse.y = touch.clientY + window.scrollY;
     }, { passive: true });
     
     addEventListener('touchmove', e => { 
         isDragging = true;
         const touch = e.touches[0];
         mouse.x = touch.clientX;
-        mouse.y = touch.clientY;
+        mouse.y = touch.clientY + window.scrollY;
     }, { passive: true });
     
     addEventListener('touchend', e => { 
@@ -506,7 +514,7 @@
             const touch = e.changedTouches[0];
             stars.push({
                 x: touch.clientX,
-                y: touch.clientY,
+                y: touch.clientY + window.scrollY,
                 brightness: 0.8,
                 twinkle: Math.random() * 0.008 + 0.004
             });
@@ -521,7 +529,7 @@
         if (e.target.tagName === 'A') return;
         stars.push({
             x: e.clientX,
-            y: e.clientY,
+            y: e.clientY + window.scrollY,
             brightness: 0.8,
             twinkle: Math.random() * 0.008 + 0.004
         });
@@ -530,15 +538,9 @@
     function animate() {
         ctx.clearRect(0, 0, w, h);
         
-        // Parallax offset based on scroll - stars move slower than content
-        const parallaxOffset = window.scrollY * 0.3;
-        
         stars.forEach((star, i) => {
-            // Apply parallax - stars shift up as you scroll down
-            const starY = (star.y - parallaxOffset % h + h) % h;
-            
             const dx = mouse.x - star.x;
-            const dy = mouse.y - starY;
+            const dy = mouse.y - star.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
             
             let displayBrightness = star.brightness;
@@ -556,23 +558,22 @@
                 ctx.strokeStyle = `rgba(255,255,255,${opacity})`;
                 ctx.lineWidth = 1;
                 ctx.beginPath();
-                ctx.moveTo(star.x, starY);
+                ctx.moveTo(star.x, star.y);
                 ctx.lineTo(mouse.x, mouse.y);
                 ctx.stroke();
             }
             
-            // Draw star with parallax position
+            // Draw star at absolute position
             ctx.beginPath();
-            ctx.arc(star.x, starY, 1.5, 0, 6.28);
+            ctx.arc(star.x, star.y, 1.5, 0, 6.28);
             ctx.fillStyle = `rgba(255,255,255,${displayBrightness})`;
             ctx.fill();
             
             // Connect to nearby stars
             for (let j = i + 1; j < stars.length; j++) {
                 const other = stars[j];
-                const otherY = (other.y - parallaxOffset % h + h) % h;
                 const dx2 = star.x - other.x;
-                const dy2 = starY - otherY;
+                const dy2 = star.y - other.y;
                 const dist2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
                 
                 if (dist2 < 120) {
@@ -580,8 +581,8 @@
                     ctx.strokeStyle = `rgba(255,255,255,${opacity})`;
                     ctx.lineWidth = 0.5;
                     ctx.beginPath();
-                    ctx.moveTo(star.x, starY);
-                    ctx.lineTo(other.x, otherY);
+                    ctx.moveTo(star.x, star.y);
+                    ctx.lineTo(other.x, other.y);
                     ctx.stroke();
                 }
             }
