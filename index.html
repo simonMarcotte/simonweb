@@ -17,7 +17,7 @@
         }
 
         body {
-            font-family: -apple-system, orbitron;
+            font-family: ui-serif, Georgia, 'Times New Roman', Times, serif;
             background: #0a0a0a;
             color: #fff;
             margin: 0;
@@ -27,6 +27,7 @@
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
+            overscroll-behavior: none;
         }
 
         canvas { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 1; }
@@ -441,7 +442,6 @@
     resize();
     addEventListener('resize', resize);
     addEventListener('load', getTimelineNodes);
-    window.addEventListener('scroll', getTimelineNodes, { passive: true });
     
     let isDragging = false;
     let touchStartTime = 0;
