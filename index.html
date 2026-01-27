@@ -12,31 +12,281 @@
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: -apple-system, orbitron;
             background: #0a0a0a;
             color: #fff;
             margin: 0;
-            height: 100vh;
-            overflow: hidden;
+            overflow-x: hidden;
+            position: relative;
             user-select: none;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            left: 0;
-            -webkit-overflow-scrolling: touch;
-            overscroll-behavior: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
         }
 
-        canvas { position: fixed; top: 0; left: 0; pointer-events: none; }
-        .nav { position: fixed; top: 40px; right: 40px; display: flex; gap: 20px; pointer-events: auto; }
+        canvas { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 1; }
+        
+        .content { position: relative; z-index: 10; }
+        
+        .nav { position: fixed; top: 20px; right: 20px; display: flex; gap: 20px; pointer-events: auto; z-index: 20; }
         .nav a { color: #ccc; text-decoration: none; font-size: 14px; position: relative; transition: color 0.2s; pointer-events: auto; }
         .nav a:hover { color: #fff; }
         .nav a::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 1px; background: #fff; transition: width 0.2s; }
         .nav a:hover::after { width: 100%; }
-        .main { display: flex; justify-content: center; align-items: center; height: 100vh; pointer-events: none; }
-        .name { font-size: 5rem; font-weight: 300; margin: 0; pointer-events: none; }
-        @media (max-width: 768px) { .name { font-size: 3rem; } .nav { top: 20px; right: 20px; gap: 15px; } }
+        
+        .header {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+        
+        .header h1 {
+            font-size: 5rem;
+            font-weight: 300;
+            text-align: center;
+            text-transform: lowercase;
+        }
+
+        .section {
+            padding: 80px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 60px;
+            text-align: center;
+            text-transform: lowercase;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .timeline-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 6px;
+            bottom: -150px;
+            width: 2px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(255,255,255,0.3));
+            pointer-events: none;
+        }
+
+        .timeline-item {
+            margin-bottom: 150px;
+            position: relative;
+            height: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 12px;
+            background: #fff;
+            border: 2px solid #0a0a0a;
+            border-radius: 50%;
+            z-index: 15;
+            box-shadow: 0 0 20px rgba(255,255,255,0.6);
+        }
+
+        .item-content {
+            padding: 0;
+            background: transparent;
+            border: none;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+            text-align: center;
+        }
+
+        .info-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            padding: 12px 16px;
+            margin-top: 20px;
+        }
+
+        .logo {
+            width: 44px;
+            height: 44px;
+            border-radius: 4px;
+            background: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 22px;
+            filter: brightness(0.85) grayscale(0.15);
+            padding: 4px;
+            position: relative;
+            z-index: 20;
+        }
+
+        .logo img {
+            filter: brightness(0.85) grayscale(0.15);
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border: none;
+            outline: none;
+        }
+
+        .job-info {
+            text-align: center;
+        }
+
+        .job-info h3 {
+            font-size: 1.3rem;
+            font-weight: 400;
+            margin: 0 0 2px 0;
+            text-transform: lowercase;
+        }
+
+        .job-title {
+            font-size: 1rem;
+            color: #aaa;
+            margin: 0;
+            text-transform: lowercase;
+        }
+
+        .job-date {
+            font-size: 0.8rem;
+            color: #777;
+            margin: 4px 0 0 0;
+            text-transform: lowercase;
+        }
+
+        .media-container {
+            margin-top: 12px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .media-item {
+            position: relative;
+            display: inline-block;
+            padding: 8px;
+        }
+
+        .media-item img {
+            width: 120px;
+            height: 120px;
+            border-radius: 4px;
+            object-fit: cover;
+            border: 1px solid rgba(255,255,255,0.15);
+            display: block;
+        }
+
+        .media-item a {
+            display: block;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 3rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+                margin-bottom: 40px;
+            }
+
+            .timeline-item {
+                margin-bottom: 100px;
+            }
+
+            .media-item img {
+                width: 100px;
+                height: 100px;
+            }
+
+            .section {
+                padding: 50px 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 30px 15px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .nav {
+                top: 15px;
+                right: 15px;
+                gap: 12px;
+                font-size: 12px;
+            }
+
+            .section {
+                padding: 40px 15px;
+            }
+
+            .timeline {
+                padding: 30px 0;
+            }
+
+            .timeline-item {
+                margin-bottom: 80px;
+                height: 150px;
+            }
+
+            .item-content {
+                width: 90%;
+            }
+
+            .media-item img {
+                width: 80px;
+                height: 80px;
+            }
+
+            .logo {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+
+            .info-header {
+                gap: 10px;
+            }
+
+            .job-info h3 {
+                font-size: 1rem;
+            }
+
+            .job-title {
+                font-size: 0.85rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -46,29 +296,152 @@
         <a href="https://github.com/simonMarcotte">github</a>
         <a href="mailto:simonmrctt@gmail.com">email</a>
     </nav>
-    <div class="main">
-        <h1 class="name">simon marcotte</h1>
+    
+    <div class="content">
+        <div class="header">
+            <h1>simon marcotte</h1>
+        </div>
+
+        <section class="section" id="work">
+            <h2 class="section-title">Work Experience</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="item-content">
+                        <div class="info-header">
+                            <div class="logo">
+                                <img src="assets/robinhoodLogo.png" alt="Robinhood" style="width: 100%; height: 100%; object-fit: contain; border-radius: 4px;">
+                            </div>
+                            <div class="job-info">
+                                <h3>Robinhood</h3>
+                                <p class="job-title">Software Engineer Intern</p>
+                                <p class="job-date">sep 2025 - dec 2025</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="item-content">
+                        <div class="info-header">
+                            <div class="logo">
+                                <img src="assets/awsLogo.png" alt="AWS" style="width: 100%; height: 100%; object-fit: contain; border-radius: 4px;">
+                            </div>
+                            <div class="job-info">
+                                <h3>Amazon Web Services (AWS)</h3>
+                                <p class="job-title">Software Development Engineer Intern</p>                                <p class="job-date">may 2025 - aug 2025</p>                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="item-content">
+                        <div class="info-header">
+                            <div class="logo">
+                                <img src="assets/gfLogo.png" alt="GF" style="width: 100%; height: 100%; object-fit: contain; border-radius: 4px;">
+                            </div>
+                            <div class="job-info">
+                                <h3>General Fusion</h3>
+                                <p class="job-title">Software Engineer Intern</p>
+                                <p class="job-date">jan 2024 - aug 2024</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="education">
+            <h2 class="section-title">Education</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="item-content">
+                        <div class="info-header">
+                            <div class="logo">
+                                <img src="assets/uofaLogo.png" alt="UofA" style="width: 100%; height: 100%; object-fit: contain; border-radius: 4px;">
+                            </div>
+                            <div class="job-info">
+                                <h3>university of alberta</h3>
+                                <p class="job-title">bsc. computer engineering (co-op)</p>                                <p class="job-date">2021 - 2026</p>                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="item-content">
+                        <div class="info-header">
+                            <div class="logo">
+                                <img src="assets/lisgarLogo.png" alt="Lisgar" style="width: 100%; height: 100%; object-fit: contain; border-radius: 4px;">
+                            </div>
+                            <div class="job-info">
+                                <h3>lisgar collegiate institute</h3>
+                                <p class="job-title">high school</p>
+                                <p class="job-date">2017 - 2021</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
 
     <script>
     const c = document.getElementById('c'), ctx = c.getContext('2d');
-    let w, h, stars = [], mouse = { x: 0, y: 0 };
+    let w, h, stars = [], mouse = { x: 0, y: 0 }, timelineNodes = [];
+    
+    function getTimelineNodes() {
+        timelineNodes = { work: [], education: [] };
+        
+        const workSection = document.querySelector('#work');
+        const educationSection = document.querySelector('#education');
+        
+        if (workSection) {
+            workSection.querySelectorAll('.timeline-dot').forEach(dot => {
+                const rect = dot.getBoundingClientRect();
+                timelineNodes.work.push({
+                    x: rect.left + rect.width / 2,
+                    y: rect.top + rect.height / 2 + window.scrollY
+                });
+            });
+        }
+        
+        if (educationSection) {
+            educationSection.querySelectorAll('.timeline-dot').forEach(dot => {
+                const rect = dot.getBoundingClientRect();
+                timelineNodes.education.push({
+                    x: rect.left + rect.width / 2,
+                    y: rect.top + rect.height / 2 + window.scrollY
+                });
+            });
+        }
+    }
     
     function resize() { 
         c.width = w = innerWidth; 
-        c.height = h = innerHeight;
+        c.height = Math.max(innerHeight, document.documentElement.scrollHeight);
         stars = [];
-        for (let i = 0; i < 80; i++) {
+        
+        // Generate stars across entire page height
+        const numStars = Math.ceil(80 * (c.height / innerHeight));
+        for (let i = 0; i < numStars; i++) {
             stars.push({
                 x: Math.random() * w,
-                y: Math.random() * h,
+                y: Math.random() * c.height,
                 brightness: Math.random() * 0.5 + 0.2,
                 twinkle: Math.random() * 0.008 + 0.004
             });
         }
+        
+        getTimelineNodes();
     }
     resize();
     addEventListener('resize', resize);
+    addEventListener('load', getTimelineNodes);
+    window.addEventListener('scroll', getTimelineNodes, { passive: true });
     
     let isDragging = false;
     let touchStartTime = 0;
@@ -76,69 +449,57 @@
     // Mouse events for desktop
     addEventListener('mousemove', e => { 
         mouse.x = e.clientX; 
-        mouse.y = e.clientY; 
+        mouse.y = e.clientY + window.scrollY;
     });
     
     // Touch events for mobile
     addEventListener('touchstart', e => { 
-        if (e.target.tagName === 'A') return; // Allow nav links to work
-        e.preventDefault();
+        if (e.target.tagName === 'A') return;
         touchStartTime = Date.now();
         isDragging = false;
         const touch = e.touches[0];
         mouse.x = touch.clientX;
-        mouse.y = touch.clientY;
-    }, { passive: false });
+        mouse.y = touch.clientY + window.scrollY;
+    }, { passive: true });
     
     addEventListener('touchmove', e => { 
-        if (e.target.tagName === 'A') return;
-        e.preventDefault();
         isDragging = true;
         const touch = e.touches[0];
         mouse.x = touch.clientX;
-        mouse.y = touch.clientY;
-    }, { passive: false });
+        mouse.y = touch.clientY + window.scrollY;
+    }, { passive: true });
     
     addEventListener('touchend', e => { 
-        if (e.target.tagName === 'A') return;
-        e.preventDefault();
-        
         const touchDuration = Date.now() - touchStartTime;
         
-        // add star o quick tap
         if (!isDragging && touchDuration < 200) {
             const touch = e.changedTouches[0];
             stars.push({
                 x: touch.clientX,
-                y: touch.clientY,
+                y: touch.clientY + window.scrollY,
                 brightness: 0.8,
                 twinkle: Math.random() * 0.008 + 0.004
             });
         }
         
-        // Reset mouse position when touch ends to stop connections
         mouse.x = -1000;
         mouse.y = -1000;
-    }, { passive: false });
+    }, { passive: true });
     
     // Click events for desktop
     addEventListener('click', e => {
-        if (e.target.tagName === 'A') return; // Allow nav links to work
+        if (e.target.tagName === 'A') return;
         stars.push({
             x: e.clientX,
-            y: e.clientY,
+            y: e.clientY + window.scrollY,
             brightness: 0.8,
             twinkle: Math.random() * 0.008 + 0.004
         });
     });
     
-    // Prevent default behaviors that cause mobile issues
-    addEventListener('gesturestart', e => e.preventDefault());
-    addEventListener('gesturechange', e => e.preventDefault());
-    addEventListener('gestureend', e => e.preventDefault());
-    
     function animate() {
-        ctx.clearRect(0, 0, w, h);
+        ctx.clearRect(0, 0, w, c.height);
+        const viewportScrollY = window.scrollY;
         
         stars.forEach((star, i) => {
             const dx = mouse.x - star.x;
@@ -152,22 +513,22 @@
             if (star.brightness > 0.8 || star.brightness < 0.2) star.twinkle *= -1;
             
             // Mouse interaction
-            if (dist < 150) {
-                const mouseEffect = (150 - dist) / 150 * 0.3;
+            if (dist < 250) {
+                const mouseEffect = (250 - dist) / 250 * 0.3;
                 displayBrightness = Math.min(1.0, star.brightness + mouseEffect);
                 
-                const opacity = (150 - dist) / 150 * 0.6;
+                const opacity = (250 - dist) / 250 * 0.6;
                 ctx.strokeStyle = `rgba(255,255,255,${opacity})`;
                 ctx.lineWidth = 1;
                 ctx.beginPath();
-                ctx.moveTo(star.x, star.y);
-                ctx.lineTo(mouse.x, mouse.y);
+                ctx.moveTo(star.x, star.y - viewportScrollY);
+                ctx.lineTo(mouse.x, mouse.y - viewportScrollY);
                 ctx.stroke();
             }
             
             // Draw star with display brightness
             ctx.beginPath();
-            ctx.arc(star.x, star.y, 1.5, 0, 6.28);
+            ctx.arc(star.x, star.y - viewportScrollY, 1.5, 0, 6.28);
             ctx.fillStyle = `rgba(255,255,255,${displayBrightness})`;
             ctx.fill();
             
@@ -183,8 +544,8 @@
                     ctx.strokeStyle = `rgba(255,255,255,${opacity})`;
                     ctx.lineWidth = 0.5;
                     ctx.beginPath();
-                    ctx.moveTo(star.x, star.y);
-                    ctx.lineTo(other.x, other.y);
+                    ctx.moveTo(star.x, star.y - viewportScrollY);
+                    ctx.lineTo(other.x, other.y - viewportScrollY);
                     ctx.stroke();
                 }
             }
