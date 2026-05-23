@@ -83,14 +83,14 @@
             left: 50%;
             transform: translateX(-50%);
             top: 6px;
-            bottom: -150px;
+            bottom: -80px;
             width: 2px;
             background: linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(255,255,255,0.3));
             pointer-events: none;
         }
 
         .timeline-item {
-            margin-bottom: 150px;
+            margin-bottom: 80px;
             position: relative;
             height: auto;
             display: flex;
@@ -134,17 +134,17 @@
         }
 
         .logo {
-            width: 44px;
-            height: 44px;
+            width: 60px;
+            height: 60px;
             border-radius: 4px;
-            background: #1a1a1a;
+            background: #1a1a1a;;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
             font-size: 22px;
             filter: brightness(0.85) grayscale(0.15);
-            padding: 4px;
+            padding: 1px;
             position: relative;
             z-index: 20;
         }
@@ -180,6 +180,13 @@
             font-size: 0.8rem;
             color: #777;
             margin: 4px 0 0 0;
+            text-transform: lowercase;
+        }
+
+        .job-location {
+            font-size: 0.8rem;
+            color: #888;
+            margin: 2px 0 0 0;
             text-transform: lowercase;
         }
 
@@ -221,7 +228,7 @@
             }
 
             .timeline-item {
-                margin-bottom: 100px;
+                margin-bottom: 70px;
             }
 
             .media-item img {
@@ -273,8 +280,8 @@
             }
 
             .logo {
-                width: 40px;
-                height: 40px;
+                width: 50px;
+                height: 50px;
                 font-size: 18px;
             }
 
@@ -299,15 +306,50 @@
             text-transform: lowercase;
             letter-spacing: 1px;
         }
+
+        .timeline-item .logo { cursor: grab; }
+        .timeline-item.dragging .logo { cursor: grabbing; }
+        .timeline-item.dragging { z-index: 100; }
+        .timeline-item.resetting { transition: top 0.4s ease, left 0.4s ease; }
+        .timeline.no-connectors .timeline-item::after { display: none; }
+
+        .reset-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 20px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #888;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 20;
+            transition: color 0.2s, border-color 0.2s, opacity 0.3s;
+            border-radius: 4px;
+            padding: 0;
+        }
+        .reset-btn:hover { color: #fff; border-color: rgba(255,255,255,0.5); }
+        .reset-btn.hidden { opacity: 0; pointer-events: none; }
     </style>
 </head>
 <body>
     <canvas id="c"></canvas>
+    <button class="reset-btn hidden" id="reset-btn" onclick="resetLayout()" title="reset layout">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+            <path d="M3 3v5h5"/>
+        </svg>
+    </button>
     <nav class="nav">
-        <a href="https://linkedin.com/in/simoncmarcotte">linkedin</a>
-        <a href="https://github.com/simonMarcotte">github</a>
-        <a href="mailto:simonmrctt@gmail.com">email</a>
+        <a href="https://linkedin.com/in/simoncmarcotte" target="_blank" rel="noopener noreferrer">linkedin</a>
+        <a href="https://github.com/simonMarcotte" target="_blank" rel="noopener noreferrer">github</a>
+        <a href="mailto:simonmrctt@gmail.com" target="_blank" rel="noopener noreferrer">email</a>
     </nav>
+
+    <script src="data/profile-data.js"></script>
     
     <div class="content">
         <div class="header">
@@ -316,90 +358,12 @@
 
         <section class="section" id="work">
             <h2 class="section-title">Work Experience</h2>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="item-content">
-                        <div class="info-header">
-                            <div class="logo">
-                                <img src="assets/robinhoodLogo.png" alt="Robinhood" style="width: 100%; height: 100%; object-fit: contain; border-radius: 4px;">
-                            </div>
-                            <div class="job-info">
-                                <h3>Robinhood</h3>
-                                <p class="job-title">Software Engineer Intern</p>
-                                <p class="job-date">sep 2025 - dec 2025</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="item-content">
-                        <div class="info-header">
-                            <div class="logo">
-                                <img src="assets/awsLogo.png" alt="AWS" style="width: 100%; height: 100%; object-fit: contain; border-radius: 4px;">
-                            </div>
-                            <div class="job-info">
-                                <h3>Amazon Web Services (AWS)</h3>
-                                <p class="job-title">Software Development Engineer Intern</p>
-                                <p class="job-date">may 2025 - aug 2025</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="item-content">
-                        <div class="info-header">
-                            <div class="logo">
-                                <img src="assets/gfLogo.png" alt="GF" style="width: 100%; height: 100%; object-fit: contain; border-radius: 4px;">
-                            </div>
-                            <div class="job-info">
-                                <h3>General Fusion</h3>
-                                <p class="job-title">Software Engineer Intern</p>
-                                <p class="job-date">jan 2024 - aug 2024</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div class="timeline" id="work-timeline"></div>
         </section>
 
         <section class="section" id="education">
             <h2 class="section-title">Education</h2>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="item-content">
-                        <div class="info-header">
-                            <div class="logo">
-                                <img src="assets/uofaLogo.png" alt="UofA" style="width: 100%; height: 100%; object-fit: contain; border-radius: 4px;">
-                            </div>
-                            <div class="job-info">
-                                <h3>university of alberta</h3>
-                                <p class="job-title">bsc. computer engineering (co-op)</p>                                <p class="job-date">2021 - 2026</p>                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="item-content">
-                        <div class="info-header">
-                            <div class="logo">
-                                <img src="assets/lisgarLogo.png" alt="Lisgar" style="width: 100%; height: 100%; object-fit: contain; border-radius: 4px;">
-                            </div>
-                            <div class="job-info">
-                                <h3>lisgar collegiate institute</h3>
-                                <p class="job-title">high school</p>
-                                <p class="job-date">2017 - 2021</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div class="timeline" id="education-timeline"></div>
         </section>
 
         <footer class="footer">
@@ -409,43 +373,165 @@
 
     <script>
     const c = document.getElementById('c'), ctx = c.getContext('2d');
-    let w, h, stars = [], mouse = { x: -1000, y: -1000 }, timelineNodes = [];
-    
+    let w, h, stars = [], mouse = { clientX: -1000, clientY: -1000 }, timelineNodes = [];
+
+    // --- Drag state ---
+    let dragState = null;
+    let hadCardDrag = false;
+
+    function createTimelineItem(item) {
+        const el = document.createElement('div');
+        el.className = 'timeline-item';
+        el.innerHTML = `
+            <div class="timeline-dot"></div>
+            <div class="item-content">
+                <div class="info-header">
+                    <div class="logo">
+                        <img src="${item.logo}" alt="${item.alt}" style="width:100%;height:100%;object-fit:contain;border-radius:4px;">
+                    </div>
+                    <div class="job-info">
+                        <h3>${item.title}</h3>
+                        <p class="job-title">${item.subtitle}</p>
+                        <p class="job-location">${item.location}</p>
+                        <p class="job-date">${item.date}</p>
+                    </div>
+                </div>
+            </div>
+        `;
+        return el;
+    }
+
+    function renderTimeline(containerId, items) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = '';
+        items.forEach(item => container.appendChild(createTimelineItem(item)));
+    }
+
+    function initDraggable(container) {
+        const items = Array.from(container.querySelectorAll('.timeline-item'));
+        const containerRect = container.getBoundingClientRect();
+
+        // Measure ALL natural tops before pulling any item from flow (siblings shift when one goes absolute)
+        const naturalTops = items.map(item => item.getBoundingClientRect().top - containerRect.top);
+
+        container.style.height = containerRect.height + 'px';
+        // Canvas draws connections now — disable the CSS ::after connector lines permanently
+        container.classList.add('no-connectors');
+
+        items.forEach((item, i) => {
+            item._naturalTop  = naturalTops[i];
+            item._naturalLeft = 0;
+
+            item.style.position = 'absolute';
+            item.style.margin   = '0';
+            item.style.width    = '100%';
+            item.style.top      = item._naturalTop + 'px';
+            item.style.left     = '0';
+
+            item.querySelector('.logo').addEventListener('pointerdown', onPointerDown);
+        });
+    }
+
+    function onPointerDown(e) {
+        if (e.target.tagName === 'A') return;
+        e.preventDefault();
+
+        const item = e.currentTarget.closest('.timeline-item');
+        const itemRect = item.getBoundingClientRect();
+
+        dragState = {
+            item,
+            container: item.closest('.timeline'),
+            offsetX: e.clientX - itemRect.left,
+            offsetY: e.clientY - itemRect.top
+        };
+
+        item.classList.add('dragging');
+        item.setPointerCapture(e.pointerId);
+        hadCardDrag = false;
+
+        document.addEventListener('pointermove', onPointerMove);
+        document.addEventListener('pointerup', onPointerUp, { once: true });
+    }
+
+    function onPointerMove(e) {
+        if (!dragState) return;
+        hadCardDrag = true;
+
+        mouse.clientX = e.clientX;
+        mouse.clientY = e.clientY;
+
+        const { item, container, offsetX, offsetY } = dragState;
+        const cr = container.getBoundingClientRect();
+
+        item.style.left = (e.clientX - cr.left - offsetX) + 'px';
+        item.style.top  = (e.clientY - cr.top  - offsetY) + 'px';
+
+        container.classList.add('no-connectors');
+        getTimelineNodes();
+    }
+
+    function onPointerUp() {
+        if (!dragState) return;
+        dragState.item.classList.remove('dragging');
+        dragState = null;
+        document.removeEventListener('pointermove', onPointerMove);
+        getTimelineNodes();
+        if (hadCardDrag) showResetBtn();
+    }
+
+    function resetLayout() {
+        document.querySelectorAll('.timeline-item').forEach(item => {
+            item.classList.add('resetting');
+            item.style.top  = item._naturalTop  + 'px';
+            item.style.left = item._naturalLeft + 'px';
+            setTimeout(() => item.classList.remove('resetting'), 450);
+        });
+        hideResetBtn();
+        setTimeout(getTimelineNodes, 50);
+    }
+
+    function showResetBtn() { document.getElementById('reset-btn').classList.remove('hidden'); }
+    function hideResetBtn() { document.getElementById('reset-btn').classList.add('hidden'); }
+
+    function loadTimelineData() {
+        const data = window.profileData;
+        if (!data) { console.error('Timeline data is not available.'); return; }
+
+        renderTimeline('work-timeline', data.work || []);
+        renderTimeline('education-timeline', data.education || []);
+
+        setTimeout(() => {
+            ['work-timeline', 'education-timeline'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) initDraggable(el);
+            });
+            getTimelineNodes();
+            resize();
+        }, 150);
+    }
+
     function getTimelineNodes() {
         timelineNodes = { work: [], education: [] };
-        
-        const workSection = document.querySelector('#work');
-        const educationSection = document.querySelector('#education');
-        
-        if (workSection) {
-            workSection.querySelectorAll('.timeline-dot').forEach(dot => {
-                const rect = dot.getBoundingClientRect();
-                timelineNodes.work.push({
-                    x: rect.left + rect.width / 2,
-                    y: rect.top + rect.height / 2 + window.scrollY
-                });
-            });
-        }
-        
-        if (educationSection) {
-            educationSection.querySelectorAll('.timeline-dot').forEach(dot => {
-                const rect = dot.getBoundingClientRect();
-                timelineNodes.education.push({
-                    x: rect.left + rect.width / 2,
-                    y: rect.top + rect.height / 2 + window.scrollY
-                });
-            });
-        }
+
+        document.querySelectorAll('#work .timeline-dot').forEach(dot => {
+            const rect = dot.getBoundingClientRect();
+            timelineNodes.work.push({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 + window.scrollY });
+        });
+
+        document.querySelectorAll('#education .timeline-dot').forEach(dot => {
+            const rect = dot.getBoundingClientRect();
+            timelineNodes.education.push({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 + window.scrollY });
+        });
     }
-    
-    function resize() { 
+
+    function resize() {
         w = innerWidth;
-        // Use full document height for canvas
         h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight, innerHeight);
-        c.width = w; 
+        c.width = w;
         c.height = h;
-        
-        // Only regenerate stars if we don't have any
+
         if (stars.length === 0) {
             const numStars = Math.ceil(80 * (h / innerHeight));
             for (let i = 0; i < numStars; i++) {
@@ -457,12 +543,11 @@
                 });
             }
         }
-        
+
         getTimelineNodes();
     }
-    // Delay initial resize to let page layout settle
     setTimeout(resize, 100);
-    
+
     let resizeTimeout;
     addEventListener('resize', () => {
         clearTimeout(resizeTimeout);
@@ -471,7 +556,6 @@
             h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight, innerHeight);
             c.width = w;
             c.height = h;
-            // Clamp existing stars to new dimensions
             stars.forEach(star => {
                 if (star.x > w) star.x = Math.random() * w;
                 if (star.y > h) star.y = Math.random() * h;
@@ -479,115 +563,116 @@
             getTimelineNodes();
         }, 100);
     });
-    addEventListener('load', getTimelineNodes);
-    
-    let isDragging = false;
-    let touchStartTime = 0;
-    
-    // Mouse events for desktop - use absolute page coordinates
-    addEventListener('mousemove', e => { 
-        mouse.x = e.clientX; 
-        mouse.y = e.clientY + window.scrollY;
-    });
-    
-    // Touch events for mobile
-    addEventListener('touchstart', e => { 
-        if (e.target.tagName === 'A') return;
-        touchStartTime = Date.now();
-        isDragging = false;
-        const touch = e.touches[0];
-        mouse.x = touch.clientX;
-        mouse.y = touch.clientY + window.scrollY;
+    addEventListener('load', loadTimelineData);
+
+    addEventListener('mousemove', e => { mouse.clientX = e.clientX; mouse.clientY = e.clientY; });
+
+    // Mobile: only track finger position for the star hover effect — no tap-to-spawn
+    addEventListener('touchstart', e => {
+        const t = e.touches[0];
+        mouse.clientX = t.clientX; mouse.clientY = t.clientY;
     }, { passive: true });
-    
-    addEventListener('touchmove', e => { 
-        isDragging = true;
-        const touch = e.touches[0];
-        mouse.x = touch.clientX;
-        mouse.y = touch.clientY + window.scrollY;
+    addEventListener('touchmove', e => {
+        const t = e.touches[0];
+        mouse.clientX = t.clientX; mouse.clientY = t.clientY;
     }, { passive: true });
-    
-    addEventListener('touchend', e => { 
-        const touchDuration = Date.now() - touchStartTime;
-        
-        if (!isDragging && touchDuration < 200) {
-            const touch = e.changedTouches[0];
-            stars.push({
-                x: touch.clientX,
-                y: touch.clientY + window.scrollY,
-                brightness: 0.8,
-                twinkle: Math.random() * 0.008 + 0.004
-            });
-        }
-        
-        mouse.x = -1000;
-        mouse.y = -1000;
+    addEventListener('touchend', () => {
+        mouse.clientX = -1000; mouse.clientY = -1000;
     }, { passive: true });
-    
-    // Click events for desktop
+
     addEventListener('click', e => {
         if (e.target.tagName === 'A') return;
-        stars.push({
-            x: e.clientX,
-            y: e.clientY + window.scrollY,
-            brightness: 0.8,
-            twinkle: Math.random() * 0.008 + 0.004
-        });
+        if (hadCardDrag) { hadCardDrag = false; return; }
+        stars.push({ x: e.clientX, y: e.clientY + window.scrollY, brightness: 0.8, twinkle: Math.random() * 0.008 + 0.004 });
     });
-    
+
     function animate() {
+        // Refresh every frame so lines follow cards during CSS transitions and drags
+        getTimelineNodes();
+
         ctx.clearRect(0, 0, w, h);
-        
-        stars.forEach((star, i) => {
-            const dx = mouse.x - star.x;
-            const dy = mouse.y - star.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            
-            let displayBrightness = star.brightness;
-            
-            // Twinkle effect
-            star.brightness += star.twinkle;
-            if (star.brightness > 0.8 || star.brightness < 0.2) star.twinkle *= -1;
-            
-            // Mouse interaction
-            if (dist < 250) {
-                const mouseEffect = (250 - dist) / 250 * 0.3;
-                displayBrightness = Math.min(1.0, star.brightness + mouseEffect);
-                
-                const opacity = (250 - dist) / 250 * 0.6;
-                ctx.strokeStyle = `rgba(255,255,255,${opacity})`;
-                ctx.lineWidth = 1;
+
+        const mouseX = mouse.clientX + window.scrollX;
+        const mouseY = mouse.clientY + window.scrollY;
+
+        // Draw persistent connections between timeline dots
+        ['work', 'education'].forEach(key => {
+            const nodes = timelineNodes[key] || [];
+            for (let i = 0; i < nodes.length - 1; i++) {
+                const a = nodes[i], b = nodes[i + 1];
+                ctx.strokeStyle = 'rgba(255,255,255,0.45)';
+                ctx.lineWidth = 1.5;
                 ctx.beginPath();
-                ctx.moveTo(star.x, star.y);
-                ctx.lineTo(mouse.x, mouse.y);
+                ctx.moveTo(a.x, a.y);
+                ctx.lineTo(b.x, b.y);
                 ctx.stroke();
             }
-            
-            // Draw star at absolute position
+        });
+
+        stars.forEach((star, i) => {
+            const dx = mouseX - star.x, dy = mouseY - star.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            let displayBrightness = star.brightness;
+            star.brightness += star.twinkle;
+            if (star.brightness > 0.8 || star.brightness < 0.2) star.twinkle *= -1;
+
+            if (dist < 250) {
+                displayBrightness = Math.min(1.0, star.brightness + (250 - dist) / 250 * 0.3);
+                ctx.strokeStyle = `rgba(255,255,255,${(250 - dist) / 250 * 0.6})`;
+                ctx.lineWidth = 1;
+                ctx.beginPath(); ctx.moveTo(star.x, star.y); ctx.lineTo(mouseX, mouseY); ctx.stroke();
+            }
+
             ctx.beginPath();
             ctx.arc(star.x, star.y, 1.5, 0, 6.28);
             ctx.fillStyle = `rgba(255,255,255,${displayBrightness})`;
             ctx.fill();
-            
-            // Connect to nearby stars
+
             for (let j = i + 1; j < stars.length; j++) {
-                const other = stars[j];
-                const dx2 = star.x - other.x;
-                const dy2 = star.y - other.y;
-                const dist2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
-                
-                if (dist2 < 120) {
-                    const opacity = (120 - dist2) / 120 * 0.3;
-                    ctx.strokeStyle = `rgba(255,255,255,${opacity})`;
+                const o = stars[j];
+                const d2 = Math.sqrt((star.x - o.x) ** 2 + (star.y - o.y) ** 2);
+                if (d2 < 120) {
+                    ctx.strokeStyle = `rgba(255,255,255,${(120 - d2) / 120 * 0.3})`;
                     ctx.lineWidth = 0.5;
-                    ctx.beginPath();
-                    ctx.moveTo(star.x, star.y);
-                    ctx.lineTo(other.x, other.y);
-                    ctx.stroke();
+                    ctx.beginPath(); ctx.moveTo(star.x, star.y); ctx.lineTo(o.x, o.y); ctx.stroke();
                 }
             }
         });
-        
+
+        // Scroll-down arrow indicator — fades out as you leave the header
+        const scrollFade = Math.max(0, 1 - window.scrollY / (innerHeight * 0.25));
+        if (scrollFade > 0) {
+            const t = Date.now();
+            const pulse = 0.45 + 0.3 * Math.sin(t / 700);
+            const bob = Math.sin(t / 900) * 4;
+            const cx = innerWidth / 2;
+            const by = window.scrollY + innerHeight - 52 + bob;
+            const alpha = scrollFade * pulse;
+
+            const chevrons = [
+                [[-18, -13], [-9, -6], [0, 0], [9, -6], [18, -13]],
+                [[-18, -25], [-9, -18], [0, -12], [9, -18], [18, -25]],
+            ];
+
+            chevrons.forEach(pts => {
+                ctx.strokeStyle = `rgba(255,255,255,${alpha * 0.45})`;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                pts.forEach(([dx, dy], i) => {
+                    i === 0 ? ctx.moveTo(cx + dx, by + dy) : ctx.lineTo(cx + dx, by + dy);
+                });
+                ctx.stroke();
+
+                pts.forEach(([dx, dy]) => {
+                    ctx.beginPath();
+                    ctx.arc(cx + dx, by + dy, 1.5, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+                    ctx.fill();
+                });
+            });
+        }
+
         requestAnimationFrame(animate);
     }
     animate();
