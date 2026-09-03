@@ -1,6 +1,14 @@
 window.profileData = {
   work: [
     {
+      title: "Stubhub",
+      subtitle: "software engineer",
+      location: "new york, NY",
+      date: "aug 2026 - present",
+      logo: "assets/stubhublogo.png",
+      alt: "stubhub"
+    },
+    {
       title: "Robinhood",
       subtitle: "software engineer intern",
       location: "toronto, on",
